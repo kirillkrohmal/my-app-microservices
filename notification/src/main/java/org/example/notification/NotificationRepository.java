@@ -1,6 +1,6 @@
-package org.example.customer;
+package org.example.notification;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+public interface NotificationRepository extends JpaRepository<Notification, Integer> {
 }

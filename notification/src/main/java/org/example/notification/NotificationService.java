@@ -1,36 +1,27 @@
-package org.example.customer;
+package org.example.notification;
 
 import lombok.AllArgsConstructor;
-import org.example.clients.fraud.FraudCheckResponse;
-import org.example.clients.fraud.FraudClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.example.clients.notification.NotificationRequest;
 
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
-public class CustomerService {
+public class NotificationService {
+    private final NotificationRepository notificationRepository;
 
-    private final CustomerRepository customerRepository;
-    private final RestTemplate restTemplate;
-    private final FraudClient fraudClient;
-    public void registerCustomer(CustomerRegistrationRequest request) {
-        Customer customer = Customer
-                .builder()
-                .firstname(request.firstname())
-                .lastname(request.lastname())
-                .email(request.email())
-                .build();
+    public void send(NotificationRequest notificationRequest) {
+        notificationRepository.save(
+                Notification.builder()
+                .toCustomerId(notificationRequest.toCustomerId())
+                .toCustomerEmail(notificationRequest.toCustomerName())
+                .sender("Amigoscode")
+                .message(notificationRequest.message())
+                .sentAt(LocalDateTime.now())
+                .build()
 
-        customerRepository.saveAndFlush(customer);
-
-        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
-
-        if(fraudCheckResponse.isFraudster()) {
-            throw new IllegalStateException("fraudster");
-        }
-
-
+        );
 
     }
 }
